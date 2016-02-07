@@ -1,0 +1,63 @@
+/*
+  Default
+ */
+svg {
+  display: inline-block;
+  width: 200px;
+  border: 2px solid #33333C;
+}
+
+svg.first {
+  width: 408px;
+}
+
+.circle {
+  fill: red;
+  stroke: black;
+  stroke-width: 3px;
+}
+
+/*
+    Interactive
+ */
+
+.circle.interactive {
+  transition: stroke-width 0.2s;
+}
+
+.circle.interactive:hover {
+  stroke-width: 7px;
+}
+
+/*
+    Animated
+ */
+@keyframes walk {
+  0%   {
+    cx:50;
+    cy:50;
+  }
+  25%  {
+    cx:150;
+    cy:50;
+  }
+  50%  {
+    cx:150;
+    cy:150;
+  }
+  75%  {
+    cx:50;
+    cy:150;
+  }
+  100% {
+    cx:50;
+    cy:50;
+  }
+}
+
+.circle.animated {
+  animation-name: walk;
+  animation-duration: 4s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
