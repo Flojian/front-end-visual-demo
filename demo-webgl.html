@@ -1,14 +1,90 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Canvas demo</title>
-  <link rel="stylesheet" type="text/css" href="styles/demo-canvas.css">
-</head>
-  <body>
-    <canvas id="canvas1" width="200" height="200"></canvas>
-    <canvas id="canvas2" width="200" height="200"></canvas>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>webgl circles</title>
+    <script src="js/GLOWCore.js"></script>
+    <script src="js/WebGLCircleRenderer.js"></script>
 
-    <script type="text/javascript" src="js/demo-webgl.js"></script>
-    <!-- <script type="text/javascript" src="js/demo-canvas2.js"></script> -->
+    <style type="text/css">
+     html,body { height: 100%; margin: 0; padding: 0; overflow: hidden; color: white; font-family: sans-serif;}
+     #container { width: 200px; height: 200px; margin: 0px; padding: 0px; left: 0px; top: 0px; z-index: -1;}
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script type="text/javascript">
+
+     var context
+       , stats
+       , animationID
+       , circleRenderer;
+
+     function initPage() {
+         var container = document.getElementById("container");
+
+         context = new GLOW.Context({
+             width: container.offsetWidth,
+             height: container.offsetHeight,
+             alpha: false
+         });
+         if (null === context.GL) {
+             alert("no WebGL");
+             return false;
+         }
+
+         container.appendChild(context.domElement);
+         context.setupClear( { red: 0, green: 0, blue: 0 } );
+         context.GL.enable(context.GL.BLEND);
+         context.GL.blendFunc(context.GL.SRC_ALPHA,
+                              context.GL.ONE_MINUS_SRC_ALPHA);
+
+         return true;
+     }
+
+     function initCircles() {
+         if (animationID !== undefined) {
+             cancelAnimationFrame(animationID);
+             circleRenderer.dispose();
+         }
+
+         var colors = new Float32Array(3);
+         var xs = new Float32Array(1);
+         var ys = new Float32Array(1);
+         var radii = new Float32Array(1);
+         var phase = new Float32Array(1);
+
+
+         colors[0] = 1;
+         colors[1] = 0;
+         colors[2] = 0;
+
+         xs[0] = 50;
+         ys[0] = 150;
+         radii[0] = 40;
+         phase[0] = Math.PI * 2;
+
+         circleRenderer = new WebGLCircleRenderer(context, 1, colors, radii, 1);
+         
+         function step() {
+
+             xs[0] += 1;
+             ys[0] -= 1;
+             circleRenderer.setPositions(xs, ys);
+
+             context.cache.clear();
+             context.clear();
+             circleRenderer.draw();
+             animationID = requestAnimationFrame(step);
+         }
+
+         animationID = requestAnimationFrame(step);
+     }
+
+     initPage();
+     initCircles();
+
+    </script>
   </body>
 </html>
